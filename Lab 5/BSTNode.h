@@ -1,39 +1,40 @@
-//
-//  BSTNode.h
-//  Lab 5
-//
-//  Created by Wilson Wu on 6/7/20.
-//  Copyright © 2020 None. All rights reserved.
-//
-
 #ifndef BSTNode_h
 #define BSTNode_h
+
+#include <iostream>
+
 template<typename T>
 class BSTNode
 {
-public:
-    BSTNode():left(nullptr),right(nullptr){}
-    BSTNode(T data):left(nullptr),right(nullptr)
-    {
-        this->data = data;
-    }
-    virtual ~BSTNode();
-    T get() const { return data; }
-    BSTNode<T>* getLeft() const { return left; }
-    BSTNode<T>* getRight() const { return right; }
-    void set(const T data) { this -> data = data; }
-    void setLeft(const BSTNode<T>* left) { this -> left = left; }
-    void setRight(const BSTNode<T>* right) { this -> right = right; }
-protected:
 private:
     T data;
     BSTNode<T>* left;
     BSTNode<T>* right;
+public:
+    //Ctor
+    BSTNode() : left(nullptr), right(nullptr){ }
+    BSTNode(T inputData) : data(inputData), left(nullptr), right(nullptr) { }
+    
+    //Dtor
+    ~BSTNode() = default;
+    
+    //Getters
+    T getData() const { return data; }
+    BSTNode<T>*& getLeft() { return left; }
+    BSTNode<T>*& getRight() { return right; }
+    
+    //Setters
+    void setData(const T inputData) { data = inputData; }
+    void setLeft(BSTNode<T>* inputNode) { left = inputNode; }
+    void setRight(BSTNode<T>* inputNode) { right = inputNode; }
+    
+    //overload << for testing
+    friend std::ostream& operator<< (std::ostream& out, const BSTNode<T>& obj)
+    {
+        out << "data: " << obj.data << " left: " << obj.left << " right: " << obj.right << std::endl;
+        return out;
+    }
+
 };
-template<typename T>
-BSTNode<T>::~BSTNode()
-{
-    delete left;
-    delete right;
-}
+
 #endif /* BSTNode_h */
