@@ -12,9 +12,9 @@ private:
     int count;
     BSTNode<T>* search(BSTNode<T>* nodePtr, T inputData) const;
     void insert(BSTNode<T>*& nodePtr, BSTNode<T>*& newNode);
-    void printInOrder(BSTNode<T>* nodePtr) const;
-    void printPreOrder(BSTNode<T>* nodePtr) const;
-    void printPostOrder(BSTNode<T>* nodePtr) const;
+    void printInOrder(BSTNode<T>* nodePtr, std::ostream &out) const;
+    void printPreOrder(BSTNode<T>* nodePtr, std::ostream &out) const;
+    void printPostOrder(BSTNode<T>* nodePtr, std::ostream &out) const;
     void remove(T inData, BSTNode<T>*& nodePtr);
     
 public:
@@ -28,10 +28,10 @@ public:
     BSTNode<T>* search(T inputData) const { return search(root, inputData); }
     void insertNode(T inputData);
     void deleteNode(T inputData);
-    void printInOrder() const { printInOrder(root); }
-    void printPreOrder() const { printPreOrder(root); }
-    void printPostOrder() const { printPostOrder(root); }
-    void printBreadthFirst() const;
+    void printInOrder(std::ostream &out = std::cout) const { printInOrder(root,out); }
+    void printPreOrder(std::ostream &out = std::cout) const { printPreOrder(root,out); }
+    void printPostOrder(std::ostream &out = std::cout) const { printPostOrder(root,out); }
+    void printBreadthFirst(std::ostream &out = std::cout) const;
     int getCount() const { return count; }
     bool isEmpty() const { return count == 0; }
     void clear(BSTNode<T>* nodePtr);
@@ -95,37 +95,37 @@ void BST<T>::insertNode(T inputData)
     insert(root, newNode);
 }
 template<typename T>
-void BST<T>::printInOrder(BSTNode<T>* nodePtr) const
+void BST<T>::printInOrder(BSTNode<T>* nodePtr, std::ostream &out) const
 {
     if (nodePtr != nullptr)
     {
-        printInOrder(nodePtr->getLeft());
-        std::cout << nodePtr->getData() << std::endl;
-        printInOrder(nodePtr->getRight());
+        printInOrder(nodePtr->getLeft(),out);
+        out << nodePtr->getData() << std::endl;
+        printInOrder(nodePtr->getRight(),out);
     }
 }
 template<typename T>
-void BST<T>::printPreOrder(BSTNode<T>* nodePtr) const
+void BST<T>::printPreOrder(BSTNode<T>* nodePtr, std::ostream &out) const
 {
     if (nodePtr != nullptr)
     {
-        std::cout << nodePtr->getData() << std::endl;
-        printPreOrder(nodePtr->getLeft());
-        printPreOrder(nodePtr->getRight());
+        out << nodePtr->getData() << std::endl;
+        printPreOrder(nodePtr->getLeft(),out);
+        printPreOrder(nodePtr->getRight(),out);
     }
 }
 template<typename T>
-void BST<T>::printPostOrder(BSTNode<T>* nodePtr) const
+void BST<T>::printPostOrder(BSTNode<T>* nodePtr, std::ostream &out) const
 {
     if (nodePtr != nullptr)
     {
-        printPostOrder(nodePtr->getLeft());
-        printPostOrder(nodePtr->getRight());
-        std::cout << nodePtr->getData() << std::endl;
+        printPostOrder(nodePtr->getLeft(),out);
+        printPostOrder(nodePtr->getRight(),out);
+        out << nodePtr->getData() << std::endl;
     }
 }
 template<typename T>
-void BST<T>::printBreadthFirst() const
+void BST<T>::printBreadthFirst(std::ostream &out) const
 {
     Queue<BSTNode<T>*> next;
     BSTNode<T>* curr;
@@ -133,7 +133,7 @@ void BST<T>::printBreadthFirst() const
     while(!next.isEmpty())
     {
         curr = next.peekFront();
-        std::cout<<curr->getData()<<std::endl;
+        out<<curr->getData()<<std::endl;
         next.dequeue();
         if(curr->getLeft())
         {

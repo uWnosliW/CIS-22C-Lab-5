@@ -3,9 +3,7 @@
 // implement BST and BSTNode ADT
 /*
  assumptions:
- 1) a given BST can only have one specific type of currency, so any other currency types in the file or console will be ignored
- 2) first currency object in the file defines what type the BST will be
- 3) currencies are formatted correctly in the input file
+ 1) each currency object is written on a newline in the file so the program validates input one line at a time
  */
 /*
  pseudocode:
@@ -25,10 +23,54 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <string>
 #include "BST.h"
 #include "Currency.h"
 using namespace std;
 
+Currency* validateFileInput(const string curr)
+{
+    stringstream ss(curr);
+    string whole = "",part = "";
+    int bills = 0,coins = 0;
+    ss>>whole>>bills>>coins>>part;
+    if (!(ss.fail() || !(whole == "unit" && part == "frac") || !ss.eof()))
+    {
+        return new Currency(bills,coins);
+    }
+    return nullptr;
+}
+Currency* validateConsoleInput(const string curr,string &instruction)
+{
+    stringstream ss(curr);
+    string whole = "",part = "";
+    int bills = 0,coins = 0;
+    ss>>instruction;
+    if(!(instruction == "insert" || instruction == "search" || instruction == "delete" || instruction == "print" ||instruction == "end"))
+    {
+        instruction = "bad";
+        return nullptr;
+    }
+    if((instruction == "print" || instruction == "end"))
+    {
+        if(!ss.eof())
+        {
+            instruction = "bad";
+            return nullptr;
+        }
+        else
+        {
+            return nullptr;
+        }
+    }
+    ss>>whole>>bills>>coins>>part;
+    if (!(ss.fail() || !(whole == "unit" && part == "frac") || !ss.eof()))
+    {
+        return new Currency(bills,coins);
+    }
+    instruction = "bad";
+    return nullptr;
+}
 // /Users/Wilson/Documents/De Anza/Lab 5/Lab 5/test.txt
 // /Users/Wilson/Documents/De Anza/Lab 5/Lab 5/output.txt
 int main(int argc, const char * argv[]) {
@@ -51,22 +93,101 @@ int main(int argc, const char * argv[]) {
     getline(fin, curr);
     while(!fin.eof())
     {
-        stringstream ss(curr);
-        string whole = "",part = "";
-        int bills = 0,coins = 0;
-        ss>>whole>>bills>>coins>>part;
-        if(ss.fail() || !(whole == "unit" && part == "frac"))
+        Currency* currency = validateFileInput(curr);
+        if(currency!=nullptr)
         {
-            cout<<curr<<" ignored because of incorrect formatting"<<endl;
+            bst.insertNode(*currency);
         }
         else
         {
-            bst.insertNode(Currency(bills,coins));
+            cout<<curr<<" ignored: improper formatting"<<endl;
         }
+        delete currency;
         getline(fin, curr);
     }
     bst.printInOrder();
-
+    
+    cout<<"Type \"insert\", \"search\", or \"delete\" followed by a currency object to modify the BST. Type \"print\", \"end\" to print the BST inorder or end the program."<<endl;
+    getline(cin,curr);
+    while(curr != "end")
+    {
+        string instruction;
+        Currency* currency = validateConsoleInput(curr,instruction);
+        if(instruction == "bad")
+        {
+            cout<<curr<<" ignored: improper formatting"<<endl;
+        }
+        else
+        {
+            if(instruction == "print")
+            {
+                cout<<"breadth first traversal"<<endl;
+                bst.printBreadthFirst();
+                cout<<endl<<"in order traversal"<<endl;
+                bst.printInOrder();
+                cout<<endl<<"pre order traversal"<<endl;
+                bst.printPreOrder();
+                cout<<endl<<"post order traversal"<<endl;
+                bst.printPostOrder();
+                fout<<"breadth first traversal"<<endl;
+                bst.printBreadthFirst(fout);
+                fout<<endl<<"in order traversal"<<endl;
+                bst.printInOrder(fout);
+                fout<<endl<<"pre order traversal"<<endl;
+                bst.printPreOrder(fout);
+                fout<<endl<<"post order traversal"<<endl;
+                bst.printPostOrder(fout);
+            }
+            else if(instruction == "insert")
+            {
+                bst.insertNode(*currency);
+                cout<<*currency<<" has been inserted into the BST"<<endl;
+            }
+            else if(instruction == "search")
+            {
+                BSTNode<Currency>* temp = bst.search(*currency);
+                if(temp == nullptr)
+                {
+                    cout<<*currency<<" is not in the BST"<<endl;
+                }
+                else
+                {
+                    cout<<*currency<<" is found in the BST"<<endl;
+                }
+            }
+            else if(instruction == "delete")
+            {
+                bst.deleteNode(*currency);
+                cout<<*currency<<" has been deleted from the BST"<<endl;
+            }
+            else
+            {
+                cout<<"Uncaugth error, instruction ignored"<<endl;
+            }
+        }
+        cout<<endl<<"Type \"insert\", \"search\", or \"delete\" followed by a currency object to modify the BST. Type \"print\", \"end\" to print the BST inorder or end the program."<<endl;
+        getline(cin,curr);
+        delete currency;
+    }
+    
+   
+    cout<<"breadth first traversal"<<endl;
+    bst.printBreadthFirst();
+    cout<<endl<<"in order traversal"<<endl;
+    bst.printInOrder();
+    cout<<endl<<"pre order traversal"<<endl;
+    bst.printPreOrder();
+    cout<<endl<<"post order traversal"<<endl;
+    bst.printPostOrder();
+    fout<<"breadth first traversal"<<endl;
+    bst.printBreadthFirst(fout);
+    fout<<endl<<"in order traversal"<<endl;
+    bst.printInOrder(fout);
+    fout<<endl<<"pre order traversal"<<endl;
+    bst.printPreOrder(fout);
+    fout<<endl<<"post order traversal"<<endl;
+    bst.printPostOrder(fout);
+    
     //close files
     fin.close();
     fout.close();
