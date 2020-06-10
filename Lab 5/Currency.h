@@ -59,13 +59,6 @@ public:
     // Return: ostream
     friend std::ostream & operator<<(std::ostream &out, const Currency *c);
     
-    // Description: reads currency object in the proper format
-    // Pre: istream &in - input stream
-    //      Currency* &c - reference to pointer to currency object to read
-    // Post: formatted currency into the buffer
-    // Return: istream
-    friend std::istream & operator>>(std::istream &in, Currency* &c);
-    
     // Description: prints currency object in the proper format
     // Pre: ostream &out - output stream
     //      Currency& c - currency object to print
@@ -132,7 +125,7 @@ public:
     // Pre:
     // Post:
     // Return: name of coin as a string
-    virtual std::string getFracName() const { return "whole"; }
+    virtual std::string getFracName() const { return "frac"; }
     
     // Description: sets name of currency
     // Pre: string unitname - name of currency
