@@ -10,106 +10,131 @@ class BST
 private:
     BSTNode<T>* root;
     int count;
-    
-    // Description: finds a specific object in the BST
-    // Pre: BSTNode<T>* nodePtr - root node
-    //      T inputData - object to find
-    // Post:
-    // Return: pointer to BSTNode if found, nullptr otherwise
     BSTNode<T>* search(BSTNode<T>* nodePtr, T inputData) const;
+    /* This function searches for a specific object in BST
+       Pre: BSTNode<T>* nodePtr - root node pointer to start search
+            T inputData = data to search for
+       Post:
+       Return: pointer to found BSTNode, else nullptr
+    */
     
-    // Description: finds a specific object in the BST
-    // Pre: BSTNode<T>* nodePtr - root node
-    //      T inputData - object to find
-    // Post:
-    // Return: pointer to BSTNode if found, nullptr otherwise
     void insert(BSTNode<T>*& nodePtr, BSTNode<T>*& newNode);
+    /* This function inserts a specific object in BST
+       Pre: BSTNode<T>*& nodePtr - root node to start traversing with
+            BSTNode<T>*& newNode - node containing data to be inserted
+       Post:
+       Return:
+    */
     
-    // Description: finds a specific object in the BST
-    // Pre: BSTNode<T>* nodePtr - root node
-    //      T inputData - object to find
-    // Post:
-    // Return: pointer to BSTNode if found, nullptr otherwise
-    void printInOrder(BSTNode<T>* nodePtr, std::ostream &out) const;
+    void printInOrder(BSTNode<T>* nodePtr, std::ostream& out) const;
+    /* This function prints BST in inorder
+       Pre: BSTNode<T>* nodePtr - root node to start traversing with
+            std::ostream& out = ostream object to send to
+       Post:
+       Return:
+    */
     
-    // Description: Prints BST preorder
-    // Pre:
-    // Post:
-    // Return:
-    void printPreOrder(BSTNode<T>* nodePtr, std::ostream &out) const;
+    void printPreOrder(BSTNode<T>* nodePtr, std::ostream& out) const;
+    /* This function prints BST in preorder
+       Pre: BSTNode<T>* nodePtr - root node to start traversing with
+            std::ostream& out = ostream object to send to
+       Post:
+       Return:
+    */
     
-    // Description: Prints BST preorder
-    // Pre:
-    // Post:
-    // Return:
-    void printPostOrder(BSTNode<T>* nodePtr, std::ostream &out) const;
-  
-    // Description: Prints BST preorder
-    // Pre:
-    // Post:
-    // Return:
+    void printPostOrder(BSTNode<T>* nodePtr, std::ostream& out) const;
+    /* This function prints BST in postorder
+       Pre: BSTNode<T>* nodePtr - root node to start traversing with
+            std::ostream& out = ostream object to send to
+       Post:
+       Return:
+    */
+    
     void remove(T inData, BSTNode<T>*& nodePtr);
+    /* This function removes specific node in BST
+       Pre: T inData - data to be removed
+            BSTNode<T>* nodePtr - root node to start traversing with
+       Post:
+       Return:
+    */
     
 public:
     //Ctor
-    BST() : root(nullptr),count(0) { }
+    BST() : root(nullptr), count(0) { }
     
     //Dtor
     ~BST() { clear(root); }
     
     //BST Operations
-    // Description: calls helper function
-    // Pre:
-    // Post:
-    // Return:
     BSTNode<T>* search(T inputData) const { return search(root, inputData); }
+    /* This function calls private search function
+       Pre: T inputData - data to be searcbed
+       Post:
+       Return: pointer to BSTNode<T>
+    */
+    
     void insertNode(T inputData);
+    /* This function calls private insert function
+       Pre: T inputData - data to be inserted
+       Post:
+       Return:
+    */
+    
     void deleteNode(T inputData);
+    /* This function calls private remove function
+       Pre: T inputData - data to be deleted
+       Post:
+       Return: pointer to BSTNode<T>
+    */
     
-    // Description: calls helper function
-    // Pre:
-    // Post:
-    // Return:
-    void printInOrder(std::ostream &out = std::cout) const { printInOrder(root,out); }
+    void printInOrder(std::ostream& out = std::cout) const { printInOrder(root,out); }
+    /* This function calls private printInOrder function
+       Pre:
+       Post:std::ostream& out - type of ostream obj to send to, defaulted to std::cout
+       Return:
+    */
     
-    // Description: calls helper function
-    // Pre:
-    // Post:
-    // Return:
-    void printPreOrder(std::ostream &out = std::cout) const { printPreOrder(root,out); }
+    void printPreOrder(std::ostream& out = std::cout) const { printPreOrder(root,out); }
+    /* This function calls private printPreOrder function
+       Pre:
+       Post:std::ostream& out - type of ostream obj to send to, defaulted to std::cout
+       Return:
+    */
     
-    // Description: calls helper function
-    // Pre:
-    // Post:
-    // Return:
-    void printPostOrder(std::ostream &out = std::cout) const { printPostOrder(root,out); }
+    void printPostOrder(std::ostream& out = std::cout) const { printPostOrder(root,out); }
+    /* This function calls private printPostOrder function
+       Pre:
+       Post:std::ostream& out - type of ostream obj to send to, defaulted to std::cout
+       Return:
+    */
     
-    // Description: prints BST in order
-    // Pre:
-    // Post:
-    // Return:
-    void printBreadthFirst(std::ostream &out = std::cout) const;
+    void printBreadthFirst(std::ostream& out = std::cout) const;
+    /* This function prints BST in breadth first order
+       Pre:
+       Post:std::ostream& out - type of ostream obj to send to, defaulted to std::cout
+       Return:
+    */
     
-    
-    // Description: shows how many nodes are in the BST
-    // Pre:
-    // Post:
-    // Return: number of nodes
     int getCount() const { return count; }
+    /* This function returns class data member count
+       Pre:
+       Post:
+       Return: int = count of nodes in BST
+    */
     
-    
-    // Description: shows if BST is empty
-    // Pre:
-    // Post:
-    // Return: true if BST is empty
     bool isEmpty() const { return count == 0; }
+    /* This function returns a bool indicating if BST is empty or not
+       Pre:
+       Post:
+       Return: true if BST is empty, else false
+    */
     
-    
-    // Description: deletes all BSTNodes
-    // Pre:
-    // Post: deletes all BSTNodes count set to 0
-    // Return:
     void clear(BSTNode<T>* nodePtr);
+    /* This function deletes all nodes in BST
+       Pre:
+       Post:
+       Return:
+    */
 };
 template <typename T>
 BSTNode<T>* BST<T>::search(BSTNode<T>* nodePtr, T inputData) const
