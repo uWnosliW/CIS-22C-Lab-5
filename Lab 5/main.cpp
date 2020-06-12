@@ -182,6 +182,10 @@ int main()
     //close files
     fin.close();
     fout.close();
+ 
+    cout << "Finished running program. Press \"a\" and hit \"enter\" to end program\n";
+    string endProgram;
+    cin >> endProgram;
     
     return 0;
     
