@@ -28,86 +28,65 @@
 #include "Currency.h"
 using namespace std;
 
-Currency* validateFileInput(const string curr)
-{
-    stringstream ss(curr);
-    string whole = "",part = "";
-    int bills = 0,coins = 0;
-    ss>>whole>>bills>>coins>>part;
-    if (!(ss.fail() || !(whole == "unit" && part == "frac") || !ss.eof()))
-    {
-        return new Currency(bills,coins);
-    }
-    return nullptr;
-}
-Currency* validateConsoleInput(const string curr,string &instruction)
-{
-    stringstream ss(curr);
-    string whole = "",part = "";
-    int bills = 0,coins = 0;
-    ss>>instruction;
-    if(!(instruction == "insert" || instruction == "search" || instruction == "delete" || instruction == "print" ||instruction == "end"))
-    {
-        instruction = "bad";
-        return nullptr;
-    }
-    if((instruction == "print" || instruction == "end"))
-    {
-        if(!ss.eof())
-        {
-            instruction = "bad";
-            return nullptr;
-        }
-        else
-        {
-            return nullptr;
-        }
-    }
-    ss>>whole>>bills>>coins>>part;
-    if (!(ss.fail() || !(whole == "unit" && part == "frac") || !ss.eof()))
-    {
-        return new Currency(bills,coins);
-    }
-    instruction = "bad";
-    return nullptr;
-}
+Currency* validateFileInput(const string curr);
+/* This function validates each row in file input
+   Pre: const string curr - data in a row in input file
+   Post:
+   Return: pointer to a newly created Currency obj, else nullptr
+*/
+
+Currency* validateConsoleInput(const string curr, string& instruction);
+/* This function validates console input
+   Pre: const string curr - each command in console inputted by user
+        string& instruction - specific instruction keyword by user
+   Post:
+   Return: pointer to newly created Currency obj, else nullptr
+*/
+
 // /Users/Wilson/Documents/De Anza/Lab 5/Lab 5/test.txt
 // /Users/Wilson/Documents/De Anza/Lab 5/Lab 5/output.txt
-int main(int argc, const char * argv[]) {
-    
+int main()
+{
     //get file path and initialize fstreams
     string fileIn,fileOut;
     cout<<"Please enter the absolute file path of the input file ensuring that special characters are escaped."<<endl;
-    //getline(cin,fileIn);
-    fileIn = "/Users/Wilson/Documents/De Anza/Lab 5/Lab 5/test.txt";
+    getline(cin,fileIn);
+    //fileIn = fileIn + "input.txt";
     cout<<"Please enter the absolute file path of the output file ensuring that special characters are escaped."<<endl;
-    //getline(cin,fileOut);
-    fileOut = "/Users/Wilson/Documents/De Anza/Lab 5/Lab 5/output.txt";
+    getline(cin,fileOut);
+    //fileOut = fileOut + "output.txt";
+    
     ifstream fin(fileIn);
+    if (!fin)
+    {
+        cerr << "Error in opening file." << endl;
+        exit(0);
+    }
     ofstream fout(fileOut);
-
-    //declare BST with type of first currency object
+    
+    /* Take input from file */
     Currency currency;
     BST<Currency> bst;
     string curr;
     getline(fin, curr);
-    while(!fin.eof())
+    while (!fin.eof())
     {
         Currency* currency = validateFileInput(curr);
-        if(currency!=nullptr)
+        if (currency != nullptr)
         {
             bst.insertNode(*currency);
         }
         else
         {
-            cout<<curr<<" ignored: improper formatting"<<endl;
+            cerr << curr << " ignored: improper formatting" << endl;
+            fout << curr << " ignored: improper formmating" << endl;
         }
         delete currency;
         getline(fin, curr);
     }
-    bst.printInOrder();
-    
-    cout<<"Type \"insert\", \"search\", or \"delete\" followed by a currency object to modify the BST. Type \"print\", \"end\" to print the BST inorder or end the program."<<endl;
+        
+    cout<<"Type \"insert\", \"search\", or \"delete\" followed by a space, then a currency object to modify the BST. Type \"print\", \"end\" to print the BST inorder or end the program."<<endl;
+
     getline(cin,curr);
     while(curr != "end")
     {
@@ -121,6 +100,7 @@ int main(int argc, const char * argv[]) {
         {
             if(instruction == "print")
             {
+                /* output to console*/
                 cout<<"breadth first traversal"<<endl;
                 bst.printBreadthFirst();
                 cout<<endl<<"in order traversal"<<endl;
@@ -130,6 +110,8 @@ int main(int argc, const char * argv[]) {
                 cout<<endl<<"post order traversal"<<endl;
                 bst.printPostOrder();
                 fout<<"breadth first traversal"<<endl;
+                
+                /* output to file */
                 bst.printBreadthFirst(fout);
                 fout<<endl<<"in order traversal"<<endl;
                 bst.printInOrder(fout);
@@ -157,20 +139,27 @@ int main(int argc, const char * argv[]) {
             }
             else if(instruction == "delete")
             {
+                try
+                {
                 bst.deleteNode(*currency);
                 cout<<*currency<<" has been deleted from the BST"<<endl;
+
+                }
+                catch (string err)
+                {
+                    cout << err << endl;
+                }
             }
             else
             {
-                cout<<"Uncaugth error, instruction ignored"<<endl;
+                cout<<"Uncaught error, instruction ignored"<<endl;
             }
         }
         cout<<endl<<"Type \"insert\", \"search\", or \"delete\" followed by a currency object to modify the BST. Type \"print\", \"end\" to print the BST inorder or end the program."<<endl;
         getline(cin,curr);
         delete currency;
     }
-    
-   
+    /* output to console */
     cout<<"breadth first traversal"<<endl;
     bst.printBreadthFirst();
     cout<<endl<<"in order traversal"<<endl;
@@ -179,6 +168,8 @@ int main(int argc, const char * argv[]) {
     bst.printPreOrder();
     cout<<endl<<"post order traversal"<<endl;
     bst.printPostOrder();
+    
+    /* output to files */
     fout<<"breadth first traversal"<<endl;
     bst.printBreadthFirst(fout);
     fout<<endl<<"in order traversal"<<endl;
@@ -191,5 +182,64 @@ int main(int argc, const char * argv[]) {
     //close files
     fin.close();
     fout.close();
+    
     return 0;
+    
+}
+Currency* validateFileInput(const string curr)
+{
+    stringstream ss(curr);
+    string whole = "", part = "";
+    int bills = 0, coins = 0;
+    ss >> whole >> bills >> coins >> part;
+    
+    if (!(ss.fail() || !(whole == "unit" && part == "frac") || !ss.eof()))
+    {
+        return new Currency(bills,coins);
+    }
+    return nullptr;
+}
+
+Currency* validateConsoleInput(const string curr, string& instruction)
+{
+    stringstream ss(curr);
+    string whole = "", part = "";
+    int bills = 0, coins = 0;
+    ss>>instruction;
+    for (auto i = 0; i < instruction.length(); i++)
+    {
+        instruction[i] = tolower(instruction[i]);
+    }
+    
+    if (! (instruction =="insert" || instruction == "search" || instruction == "delete" || instruction == "print" || instruction == "end"))
+    {
+        instruction = "bad";
+        return nullptr;
+    }
+    if ((instruction=="print" || instruction == "end"))
+    {
+        if(!ss.eof())
+        {
+            instruction = "bad";
+            return nullptr;
+        }
+        else
+        {
+            return nullptr;
+        }
+    }
+    ss>>whole>>bills>>coins>>part;
+    
+    for (auto i = 0; i < whole.length(); i++)
+    {
+        whole[i] = tolower(whole[i]);
+        part[i] = tolower(part[i]);
+    }
+    
+    if (!(ss.fail() || !(whole == "unit" && part == "frac") || !ss.eof()))
+    {
+        return new Currency(bills,coins);
+    }
+    instruction="bad";
+    return nullptr;
 }
